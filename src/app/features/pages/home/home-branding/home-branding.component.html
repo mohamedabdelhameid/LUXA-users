@@ -1,6 +1,6 @@
-@if (brands().length > 0) {
-  <div class="p-5 mt-5">
-    <p class="text-xl md:text-5xl text-gray-500">الماركات</p>
+<div class="p-5 mt-5 container mx-auto">
+  <p class="text-xl md:text-5xl text-gray-500">الماركات</p>
+  @if (brands().length > 0) {
     <owl-carousel-o [options]="customOptions">
       @for (brand of brands(); track brand.id) {
         <ng-template carouselSlide [id]="brand.id">
@@ -20,5 +20,7 @@
         </ng-template>
       }
     </owl-carousel-o>
-  </div>
-}
+  } @else {
+    <p class="text-gray-500 text-2xl">لا توجد منتجات</p>
+  }
+</div>

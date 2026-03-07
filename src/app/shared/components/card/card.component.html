@@ -6,7 +6,9 @@
     class="absolute top-3 left-3 z-10 flex items-center gap-1 bg-black/40 backdrop-blur-sm rounded-full px-2 py-1"
   >
     <span class="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse"></span>
-    <span class="text-[#D4AF37] text-[10px] tracking-wide">{{ item()?.status }}</span>
+    <span class="text-[#D4AF37] text-[10px] tracking-wide">{{
+      item()?.total_quantity! > 0 ? 'متاح' : 'غير متاح'
+    }}</span>
   </div>
 
   <div

@@ -35,9 +35,11 @@
             <img
               loading="lazy"
               [src]="
-                selectedColor()?.images?.length
-                  ? 'http://127.0.0.1:8000' + selectedColor()!.images[0].image
-                  : 'http://127.0.0.1:8000' + mobileDetails().image_cover
+                selectedImage()?.image
+                  ? 'http://127.0.0.1:8000' + selectedImage()!.image
+                  : selectedColor()?.images?.length
+                    ? 'http://127.0.0.1:8000' + selectedColor()!.images[0].image
+                    : 'http://127.0.0.1:8000' + mobileDetails().image_cover
               "
               [alt]="mobileDetails().title"
               class="w-full h-[420px] object-contain p-6 relative z-0 transition-all duration-500"
@@ -56,7 +58,7 @@
             ></div>
           </div>
 
-          @if (selectedColor()?.images?.length) {
+          <!-- @if (selectedColor()?.images?.length) {
             <div class="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
               @for (img of selectedColor()?.images || []; track img.id) {
                 <div
@@ -68,6 +70,70 @@
                     [src]="'http://127.0.0.1:8000' + img.image"
                     class="w-full h-full object-cover"
                   />
+                </div>
+              }
+            </div>
+          } -->
+          @if (selectedColor()?.images?.length) {
+            <div class="flex flex-col gap-2 justify-center">
+              <div class="relative">
+                <div
+                  #thumbsContainer
+                  class="flex gap-2 overflow-x-auto scroll-smooth pb-1 justify-center"
+                  style="scrollbar-width: none; -ms-overflow-style: none"
+                >
+                  @for (img of selectedColor()?.images || []; track img.id) {
+                    <div
+                      class="relative flex-shrink-0 w-[72px] h-[72px] rounded-xl overflow-hidden cursor-pointer transition-all duration-200"
+                      [style.border]="
+                        selectedImage()?.id === img.id
+                          ? '2px solid #D4AF37'
+                          : '2px solid rgba(255,255,255,0.08)'
+                      "
+                      (click)="selectImage(img)"
+                    >
+                      <img
+                        loading="lazy"
+                        [src]="'http://127.0.0.1:8000' + img.image"
+                        class="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+                      />
+                      @if (selectedImage()?.id === img.id) {
+                        <div
+                          class="absolute inset-0 pointer-events-none"
+                          style="background: rgba(212, 175, 55, 0.12)"
+                        ></div>
+                        <div
+                          class="absolute bottom-1 left-1/2 -translate-x-1/2 rounded-full"
+                          style="width: 12px; height: 3px; background: #d4af37"
+                        ></div>
+                      }
+                    </div>
+                  }
+                </div>
+
+                <div
+                  class="absolute top-0 right-0 h-full w-8 pointer-events-none z-10"
+                  style="background: linear-gradient(to left, #0a0a0a 30%, transparent)"
+                ></div>
+                <div
+                  class="absolute top-0 left-0 h-full w-8 pointer-events-none z-10"
+                  style="background: linear-gradient(to right, #0a0a0a 30%, transparent)"
+                ></div>
+              </div>
+
+              @if ((selectedColor()?.images?.length ?? 0) > 4) {
+                <div class="flex items-center justify-center gap-1.5">
+                  @for (img of selectedColor()?.images || []; track img.id) {
+                    <button
+                      (click)="selectImage(img)"
+                      class="rounded-full transition-all duration-200 cursor-pointer"
+                      style="height: 6px"
+                      [style.width]="selectedImage()?.id === img.id ? '16px' : '6px'"
+                      [style.background]="
+                        selectedImage()?.id === img.id ? '#D4AF37' : 'rgba(255,255,255,0.2)'
+                      "
+                    ></button>
+                  }
                 </div>
               }
             </div>
@@ -97,7 +163,9 @@
 
           <div class="flex items-center gap-2 self-start">
             <span class="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse"></span>
-            <span class="text-xs text-[#D4AF37] tracking-wider">{{ mobileDetails().status }}</span>
+            <span class="text-xs text-[#D4AF37] tracking-wider">{{
+              mobileDetails().total_quantity > 0 ? 'متاح' : 'غير متاح'
+            }}</span>
           </div>
 
           <div class="grid grid-cols-2 gap-3">
@@ -131,22 +199,26 @@
           <div>
             <p class="text-xs text-[#D4AF37]/60 tracking-widest uppercase mb-3">الألوان المتاحة</p>
             <div class="flex gap-3 flex-wrap">
-              @for (colorItem of mobileDetails().colors; track colorItem.id) {
-                <button
-                  class="relative w-10 h-10 rounded-full transition-all duration-200 cursor-pointer"
-                  [style.backgroundColor]="colorItem.color.hex_code"
-                  [title]="colorItem.color.name"
-                  (click)="selectColor(colorItem)"
-                >
-                  @if (selectedColor()?.id === colorItem.id) {
-                    <span
-                      class="absolute inset-[-4px] rounded-full border-2 border-[#D4AF37] pointer-events-none"
-                    ></span>
-                    <span
-                      class="absolute inset-[-7px] rounded-full border border-[#D4AF37]/30 pointer-events-none"
-                    ></span>
-                  }
-                </button>
+              @if (mobileDetails().colors.length > 0) {
+                @for (colorItem of mobileDetails().colors; track colorItem.id) {
+                  <button
+                    class="relative w-10 h-10 rounded-full transition-all duration-200 cursor-pointer"
+                    [style.backgroundColor]="colorItem.color.hex_code"
+                    [title]="colorItem.color.name"
+                    (click)="selectColor(colorItem)"
+                  >
+                    @if (selectedColor()?.id === colorItem.id) {
+                      <span
+                        class="absolute inset-[-4px] rounded-full border-2 border-[#D4AF37] pointer-events-none"
+                      ></span>
+                      <span
+                        class="absolute inset-[-7px] rounded-full border border-[#D4AF37]/30 pointer-events-none"
+                      ></span>
+                    }
+                  </button>
+                }
+              } @else {
+                <p class="text-gray-500 text-2xl">الألوان غير متاحة حالياً</p>
               }
             </div>
           </div>
@@ -156,11 +228,12 @@
           <div class="flex flex-col sm:flex-row gap-3">
             <button
               (click)="addMobileToCart()"
-              class="relative flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-bold text-sm tracking-wider overflow-hidden cursor-pointer group"
+              class="relative flex-1 flex items-center justify-center gap-2 px-6 py-4 rounded-xl font-bold text-sm tracking-wider overflow-hidden cursor-pointer group disabled:opacity-40 disabled:cursor-not-allowed"
               style="
                 background: linear-gradient(135deg, #d4af37 0%, #f0cc5c 50%, #d4af37 100%);
                 color: #0a0a0a;
               "
+              [disabled]="mobileDetails().colors.length == 0 || mobileDetails().total_quantity == 0"
             >
               <span class="relative z-10 flex items-center gap-2">
                 شراء الآن

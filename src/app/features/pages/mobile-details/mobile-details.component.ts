@@ -21,6 +21,7 @@ export class MobileDetailsComponent {
   mobileId: WritableSignal<string | null> = signal('');
   toastr = inject(ToastUtilService);
   selectedColor: WritableSignal<IColorItem | null> = signal(null);
+  selectedImage = signal<any>(null);
 
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
@@ -53,21 +54,40 @@ export class MobileDetailsComponent {
     });
   }
 
-  selectColor(color: IColorItem) {
-    this.selectedColor.set(color);
+  // selectColor(color: IColorItem) {
+  //   this.selectedColor.set(color);
+  // }
+
+  //   selectImage(img: any) {
+  //   this.selectedImage.set(img);
+  // }
+
+  //   selectColor(colorItem: any) {
+  //   this.selectedColor.set(colorItem);
+  //   this.selectedImage.set(colorItem?.images?.[0] ?? null);
+  // }
+
+  //   selectImage(img: { id: string; image: string }) {
+  //     const color = this.selectedColor();
+  //     if (color) {
+  //       const index = color.images.findIndex((i) => i.id === img.id);
+  //       if (index !== -1) {
+  //         const temp = color.images[0];
+  //         color.images[0] = color.images[index];
+  //         color.images[index] = temp;
+  //         this.selectedColor.set({ ...color });
+  //       }
+  //     }
+  //   }
+
+  selectImage(img: any) {
+    this.selectedImage.set(img);
   }
 
-  selectImage(img: { id: string; image: string }) {
-    const color = this.selectedColor();
-    if (color) {
-      const index = color.images.findIndex((i) => i.id === img.id);
-      if (index !== -1) {
-        const temp = color.images[0];
-        color.images[0] = color.images[index];
-        color.images[index] = temp;
-        this.selectedColor.set({ ...color });
-      }
-    }
+  // وعدّل دالة selectColor كمان تعمل reset للـ selectedImage:
+  selectColor(colorItem: any) {
+    this.selectedColor.set(colorItem);
+    this.selectedImage.set(colorItem?.images?.[0] ?? null);
   }
 
   onWhatsAppOrder(): void {
