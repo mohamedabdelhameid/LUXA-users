@@ -1,4 +1,4 @@
-@if (mobileDetails() && mobileDetails().brand) {
+@if (mobileDetails() && mobileDetails()?.brand && !mobileDetailLoading()) {
   <div class="min-h-screen bg-[#0a0a0a] text-white font-['Tajawal',sans-serif] py-10 px-4">
     <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
       <div
@@ -39,9 +39,9 @@
                   ? 'http://127.0.0.1:8000' + selectedImage()!.image
                   : selectedColor()?.images?.length
                     ? 'http://127.0.0.1:8000' + selectedColor()!.images[0].image
-                    : 'http://127.0.0.1:8000' + mobileDetails().image_cover
+                    : 'http://127.0.0.1:8000' + mobileDetails()?.image_cover
               "
-              [alt]="mobileDetails().title"
+              [alt]="mobileDetails()?.title"
               class="w-full h-[420px] object-contain p-6 relative z-0 transition-all duration-500"
             />
             <div
@@ -58,22 +58,6 @@
             ></div>
           </div>
 
-          <!-- @if (selectedColor()?.images?.length) {
-            <div class="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
-              @for (img of selectedColor()?.images || []; track img.id) {
-                <div
-                  class="flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden border border-white/10 cursor-pointer transition-all duration-200 hover:border-[#D4AF37]/60"
-                  (click)="selectImage(img)"
-                >
-                  <img
-                    loading="lazy"
-                    [src]="'http://127.0.0.1:8000' + img.image"
-                    class="w-full h-full object-cover"
-                  />
-                </div>
-              }
-            </div>
-          } -->
           @if (selectedColor()?.images?.length) {
             <div class="flex flex-col gap-2 justify-center">
               <div class="relative">
@@ -143,42 +127,42 @@
         <div class="flex flex-col gap-6">
           <div>
             <p class="text-[#D4AF37] text-sm tracking-widest uppercase mb-1 opacity-80">
-              {{ mobileDetails().brand.name }}
+              {{ mobileDetails()?.brand?.name }}
             </p>
             <h1 class="text-4xl font-black text-white leading-tight tracking-tight">
-              {{ mobileDetails().title }}
+              {{ mobileDetails()?.title }}
             </h1>
           </div>
 
           <div class="inline-flex items-baseline gap-2 self-start">
             <span class="text-4xl font-black text-[#D4AF37]">{{
-              mobileDetails().final_price
+              mobileDetails()?.final_price
             }}</span>
             <span class="text-lg text-[#D4AF37]/70 font-medium">ج.م</span>
           </div>
 
           <p class="text-white/50 text-sm leading-relaxed border-r-2 border-[#D4AF37]/30 pr-4">
-            {{ mobileDetails().description }}
+            {{ mobileDetails()?.description }}
           </p>
 
           <div class="flex items-center gap-2 self-start">
             <span class="w-2 h-2 rounded-full bg-[#D4AF37] animate-pulse"></span>
             <span class="text-xs text-[#D4AF37] tracking-wider">{{
-              mobileDetails().total_quantity > 0 ? 'متاح' : 'غير متاح'
+              mobileDetails()?.total_quantity! > 0 ? 'متاح' : 'غير متاح'
             }}</span>
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             @for (
               spec of [
-                { label: 'المعالج', value: mobileDetails().processor, icon: '⚙' },
-                { label: 'الرام / التخزين', value: mobileDetails().storage, icon: '💾' },
-                { label: 'الشاشة', value: mobileDetails().display, icon: '▣' },
-                { label: 'نظام التشغيل', value: mobileDetails().operating_system, icon: '◈' },
-                { label: 'الكاميرا', value: mobileDetails().camera, icon: '⬡' },
-                { label: 'البطارية', value: mobileDetails().battery + ' mAh', icon: '⚡' },
-                { label: 'الشبكة', value: mobileDetails().network_support, icon: '◉' },
-                { label: 'سنة الإصدار', value: mobileDetails().release_year, icon: '◷' },
+                { label: 'المعالج', value: mobileDetails()?.processor, icon: '⚙' },
+                { label: 'الرام / التخزين', value: mobileDetails()?.storage, icon: '💾' },
+                { label: 'الشاشة', value: mobileDetails()?.display, icon: '▣' },
+                { label: 'نظام التشغيل', value: mobileDetails()?.operating_system, icon: '◈' },
+                { label: 'الكاميرا', value: mobileDetails()?.camera, icon: '⬡' },
+                { label: 'البطارية', value: mobileDetails()?.battery + ' mAh', icon: '⚡' },
+                { label: 'الشبكة', value: mobileDetails()?.network_support, icon: '◉' },
+                { label: 'سنة الإصدار', value: mobileDetails()?.release_year, icon: '◷' },
               ];
               track spec.label
             ) {
@@ -199,8 +183,8 @@
           <div>
             <p class="text-xs text-[#D4AF37]/60 tracking-widest uppercase mb-3">الألوان المتاحة</p>
             <div class="flex gap-3 flex-wrap">
-              @if (mobileDetails().colors.length > 0) {
-                @for (colorItem of mobileDetails().colors; track colorItem.id) {
+              @if (mobileDetails()?.colors!.length > 0) {
+                @for (colorItem of mobileDetails()?.colors; track colorItem.id) {
                   <button
                     class="relative w-10 h-10 rounded-full transition-all duration-200 cursor-pointer"
                     [style.backgroundColor]="colorItem.color.hex_code"
@@ -233,7 +217,9 @@
                 background: linear-gradient(135deg, #d4af37 0%, #f0cc5c 50%, #d4af37 100%);
                 color: #0a0a0a;
               "
-              [disabled]="mobileDetails().colors.length == 0 || mobileDetails().total_quantity == 0"
+              [disabled]="
+                mobileDetails()?.colors!.length == 0 || mobileDetails()?.total_quantity == 0
+              "
             >
               <span class="relative z-10 flex items-center gap-2">
                 شراء الآن
@@ -313,11 +299,62 @@
       </div>
     </div>
   </div>
-} @else {
+} @else if (!mobileDetails() && !mobileDetailLoading()) {
   <div class="min-h-screen flex items-center justify-center">
     <div class="text-center">
       <div class="text-[#D4AF37] text-5xl mb-4 opacity-50">◈</div>
       <p class="text-white/50 text-lg">هذا المنتج غير موجود أو حدث خطأ ما</p>
+    </div>
+  </div>
+} @else if (mobileDetailLoading()) {
+  <div class="min-h-screen bg-[#0a0a0a] text-white py-10 px-4 animate-pulse">
+    <div class="max-w-6xl mx-auto">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div class="flex flex-col gap-4">
+          <div class="w-full h-[420px] bg-white/10 rounded-2xl"></div>
+
+          <div class="flex gap-2 justify-center">
+            @for (item of [1, 2, 3, 4, 5]; track $index) {
+              <div class="w-[72px] h-[72px] bg-white/10 rounded-xl"></div>
+            }
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-6">
+          <div>
+            <div class="w-24 h-3 bg-white/10 rounded mb-3"></div>
+            <div class="w-3/4 h-8 bg-white/10 rounded"></div>
+          </div>
+
+          <div class="w-32 h-8 bg-white/10 rounded"></div>
+
+          <div class="space-y-2">
+            <div class="w-full h-3 bg-white/10 rounded"></div>
+            <div class="w-5/6 h-3 bg-white/10 rounded"></div>
+            <div class="w-4/6 h-3 bg-white/10 rounded"></div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            @for (item of [1, 2, 3, 4, 5, 6, 7, 8]; track $index) {
+              <div class="bg-white/5 rounded-xl p-3 border border-white/5">
+                <div class="w-16 h-2 bg-white/10 rounded mb-2"></div>
+                <div class="w-24 h-3 bg-white/10 rounded"></div>
+              </div>
+            }
+          </div>
+
+          <div class="flex gap-3">
+            @for (item of [1, 2, 3, 4]; track $index) {
+              <div class="w-10 h-10 rounded-full bg-white/10"></div>
+            }
+          </div>
+
+          <div class="flex gap-3">
+            <div class="flex-1 h-[56px] bg-white/10 rounded-xl"></div>
+            <div class="flex-1 h-[56px] bg-white/10 rounded-xl"></div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 }

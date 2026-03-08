@@ -16,11 +16,12 @@ import { mobileData } from '../../../core/interfaces/cartItem/cart.interface';
 export class MobileDetailsComponent {
   private readonly productServicesServices = inject(ProductServicesServices);
   private readonly cartServices = inject(CartServices);
-  mobileDetails: WritableSignal<Iproduct> = signal({} as Iproduct);
+  mobileDetails: WritableSignal<Iproduct | null> = signal(null);
   private readonly activatedRoute = inject(ActivatedRoute);
   mobileId: WritableSignal<string | null> = signal('');
   toastr = inject(ToastUtilService);
   selectedColor: WritableSignal<IColorItem | null> = signal(null);
+  mobileDetailLoading: WritableSignal<boolean> = signal(false);
   selectedImage = signal<any>(null);
 
   ngOnInit(): void {
@@ -39,52 +40,33 @@ export class MobileDetailsComponent {
   }
 
   getMobileDetails(mobileId: string): void {
+    this.mobileDetailLoading.set(true);
     this.productServicesServices.getProductDetails(mobileId).subscribe({
       next: (res) => {
         this.mobileDetails.set(res.data);
         this.selectedColor.set(res.data.colors.length ? res.data.colors[0] : null);
+        this.mobileDetailLoading.set(false);
       },
       error: (err) => {
-        this.toastr.error(`${err.error.message}`, `${err.error.success}`, {
-          progressBar: true,
-          progressAnimation: 'decreasing',
-          timeOut: 3000,
-        });
+        if (err.error.message.includes('Not Found !')) {
+          this.mobileDetails.set(null);
+        } else {
+          this.toastr.error(`${err.error.message}`, `${err.error.success}`, {
+            progressBar: true,
+            progressAnimation: 'decreasing',
+            timeOut: 3000,
+          });
+        }
+
+        this.mobileDetailLoading.set(false);
       },
     });
   }
-
-  // selectColor(color: IColorItem) {
-  //   this.selectedColor.set(color);
-  // }
-
-  //   selectImage(img: any) {
-  //   this.selectedImage.set(img);
-  // }
-
-  //   selectColor(colorItem: any) {
-  //   this.selectedColor.set(colorItem);
-  //   this.selectedImage.set(colorItem?.images?.[0] ?? null);
-  // }
-
-  //   selectImage(img: { id: string; image: string }) {
-  //     const color = this.selectedColor();
-  //     if (color) {
-  //       const index = color.images.findIndex((i) => i.id === img.id);
-  //       if (index !== -1) {
-  //         const temp = color.images[0];
-  //         color.images[0] = color.images[index];
-  //         color.images[index] = temp;
-  //         this.selectedColor.set({ ...color });
-  //       }
-  //     }
-  //   }
 
   selectImage(img: any) {
     this.selectedImage.set(img);
   }
 
-  // وعدّل دالة selectColor كمان تعمل reset للـ selectedImage:
   selectColor(colorItem: any) {
     this.selectedColor.set(colorItem);
     this.selectedImage.set(colorItem?.images?.[0] ?? null);
@@ -93,7 +75,7 @@ export class MobileDetailsComponent {
   onWhatsAppOrder(): void {
     const phone = '201120203912';
     const message = encodeURIComponent(
-      `مرحباً، حابب أطلب موبايل ${this.mobileDetails().title} ممكن أعرف التفاصيل؟`,
+      `مرحباً، حابب أطلب موبايل ${this.mobileDetails()?.title} ممكن أعرف التفاصيل؟`,
     );
     window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
   }

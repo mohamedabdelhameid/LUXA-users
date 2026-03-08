@@ -25,6 +25,7 @@ export class CartComponent {
   private readonly cartServices = inject(CartServices);
   private readonly colorServices = inject(ColorServices);
   cartItems: WritableSignal<IAllItems | null> = signal(null);
+  cartItemsLoading: WritableSignal<boolean> = signal(false);
   colorItems: WritableSignal<Icolor[] | null> = signal(null);
   toastr = inject(ToastUtilService);
   @ViewChild(ModalComponent) modal!: ModalComponent;
@@ -52,14 +53,17 @@ export class CartComponent {
   }
 
   getAllItems(): void {
+    this.cartItemsLoading.set(true);
     this.subscription = this.cartServices.getCartItems().subscribe({
       next: (res) => {
-        this.cartItems.set(res.data);
+        this.cartItems.set(res.data ? res.data : null);
         this.getColors();
-        this.cartServices.cartCount.set(res.data.items.length);
+        this.cartServices.cartCount.set(res.data?.items?.length);
+        this.cartItemsLoading.set(false);
       },
       error: (err) => {
         this.toastr.error('اعد المحالولة بعد اعادة تسجيل دخولك', 'فشل');
+        this.cartItemsLoading.set(false);
       },
     });
   }

@@ -13,6 +13,7 @@ import { headerInterceptor } from './core/interceptor/headers/header-interceptor
 import { loadingInterceptor } from './core/interceptor/loading/loading-interceptor';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { NgxSpinnerModule } from 'ngx-spinner';
+import { provideNgxSkeletonLoader } from 'ngx-skeleton-loader';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -23,6 +24,12 @@ export const appConfig: ApplicationConfig = {
       withInMemoryScrolling({ scrollPositionRestoration: 'enabled' }),
       withViewTransitions(),
     ),
+    provideNgxSkeletonLoader({
+      theme: {
+        extendsFromRoot: true,
+        height: '30px',
+      },
+    }),
     provideHttpClient(withFetch(), withInterceptors([headerInterceptor, loadingInterceptor])),
     provideClientHydration(withEventReplay()),
     provideAnimations(),

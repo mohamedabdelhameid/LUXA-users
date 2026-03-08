@@ -1,4 +1,4 @@
-@if (cartItems()?.items) {
+@if (cartItems()?.items && !cartItemsLoading()) {
   <div
     class="min-h-screen bg-[#0a0a0a] text-white font-['Tajawal',sans-serif] py-12 px-4"
     dir="rtl"
@@ -221,7 +221,7 @@
       }
     </div>
   </div>
-} @else {
+} @else if (!cartItems()?.items && !cartItemsLoading()) {
   <div class="flex flex-col items-center justify-center py-55 gap-4">
     <div
       class="w-20 h-20 rounded-2xl flex items-center justify-center mb-2"
@@ -241,5 +241,61 @@
     >
       تصفح المنتجات
     </a>
+  </div>
+} @else if (cartItemsLoading()) {
+  <div class="min-h-screen bg-[#0a0a0a] text-white py-12 px-4 animate-pulse" dir="rtl">
+    <div class="max-w-4xl mx-auto">
+      <div class="mb-8">
+        <div class="w-48 h-8 bg-white/10 rounded mb-3"></div>
+        <div class="w-32 h-3 bg-white/10 rounded"></div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 flex flex-col gap-3">
+          @for (item of [1, 2, 3]; track $index) {
+            <div class="flex items-center gap-4 bg-white/3 border border-white/5 rounded-2xl p-4">
+              <div class="w-20 h-20 bg-white/10 rounded-xl"></div>
+
+              <div class="flex-1">
+                <div class="w-40 h-4 bg-white/10 rounded mb-2"></div>
+                <div class="w-24 h-3 bg-white/10 rounded mb-2"></div>
+                <div class="w-16 h-3 bg-white/10 rounded"></div>
+              </div>
+
+              <div class="flex flex-col items-end gap-3">
+                <div class="w-16 h-4 bg-white/10 rounded"></div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="lg:col-span-1">
+          <div class="bg-white/3 border border-white/5 rounded-2xl p-6">
+            <div class="w-24 h-3 bg-white/10 rounded mb-6"></div>
+
+            <div class="flex flex-col gap-3 mb-4">
+              <div class="flex justify-between">
+                <div class="w-24 h-3 bg-white/10 rounded"></div>
+                <div class="w-10 h-3 bg-white/10 rounded"></div>
+              </div>
+
+              <div class="flex justify-between">
+                <div class="w-24 h-3 bg-white/10 rounded"></div>
+                <div class="w-16 h-3 bg-white/10 rounded"></div>
+              </div>
+
+              <div class="flex justify-between">
+                <div class="w-16 h-3 bg-white/10 rounded"></div>
+                <div class="w-20 h-3 bg-white/10 rounded"></div>
+              </div>
+            </div>
+
+            <div class="w-full h-[52px] bg-white/10 rounded-xl mb-3"></div>
+
+            <div class="w-32 h-3 bg-white/10 rounded mx-auto"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 }

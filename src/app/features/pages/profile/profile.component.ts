@@ -20,6 +20,7 @@ export class ProfileComponent {
   private readonly orderServices = inject(OrderServices);
   private readonly toastr = inject(ToastUtilService);
   profile: WritableSignal<Account | null> = signal(null);
+  profileLoading: WritableSignal<boolean> = signal(false);
   orders: WritableSignal<IOrder[] | null> = signal(null);
   subscription!: Subscription;
 
@@ -30,13 +31,16 @@ export class ProfileComponent {
   }
 
   getProfileData(): void {
+    this.profileLoading.set(true);
     this.subscription = this.authServices.getAccountData().subscribe({
       next: (res) => {
         this.profile.set(res);
         this.getUserOrder();
+        this.profileLoading.set(false);
       },
       error: (err) => {
         this.toastr.error('يرجى إعادة تسجيل الدخول', 'فشل');
+        this.profileLoading.set(false);
       },
     });
   }

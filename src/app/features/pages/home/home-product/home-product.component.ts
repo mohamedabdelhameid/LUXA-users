@@ -20,7 +20,7 @@ export class HomeProductComponent {
   private readonly toastr = inject(ToastrService);
   apiLink = ApiLink;
   subscription!: Subscription;
-
+  isLoading: WritableSignal<boolean> = signal(false);
   products: WritableSignal<Iproduct[]> = signal([]);
 
   ngOnInit(): void {
@@ -55,9 +55,11 @@ export class HomeProductComponent {
   };
 
   getProducts(): void {
+    this.isLoading.set(true);
     this.subscription = this.productServicesServices.getAllProducts().subscribe({
       next: (res: Iglobal<Iproduct[]>) => {
         this.products.set(res.data);
+        this.isLoading.set(false);
       },
       error: (err) => {
         this.toastr.error(`${err.error.message}`, `${err.error.success}`, {
@@ -65,6 +67,7 @@ export class HomeProductComponent {
           progressAnimation: 'decreasing',
           timeOut: 3000,
         });
+        this.isLoading.set(false);
       },
     });
   }

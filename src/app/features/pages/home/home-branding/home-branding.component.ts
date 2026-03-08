@@ -6,10 +6,11 @@ import { ToastrService } from 'ngx-toastr';
 import { CarouselModule, OwlOptions } from 'ngx-owl-carousel-o';
 import { BrandServicesServices } from '../../../../core/services/brandServices/brand-services.services';
 import { Subscription } from 'rxjs';
+import { NgxSkeletonLoaderComponent } from 'ngx-skeleton-loader';
 
 @Component({
   selector: 'app-home-branding',
-  imports: [CarouselModule],
+  imports: [CarouselModule, NgxSkeletonLoaderComponent],
   templateUrl: './home-branding.component.html',
   styleUrl: './home-branding.component.css',
 })
@@ -18,7 +19,7 @@ export class HomeBrandingComponent {
   private readonly toastr = inject(ToastrService);
   apiLink = ApiLink;
   subscription!: Subscription;
-
+  isLoading: WritableSignal<boolean> = signal(true);
   brands: WritableSignal<Ibrand[]> = signal([]);
 
   ngOnInit(): void {
@@ -53,9 +54,11 @@ export class HomeBrandingComponent {
   };
 
   getBrands(): void {
+    this.isLoading.set(true);
     this.subscription = this.brandServicesServices.getAllBrands().subscribe({
       next: (res: Iglobal<Ibrand[]>) => {
         this.brands.set(res.data);
+        this.isLoading.set(false);
       },
       error: (err) => {
         this.toastr.error(`${err.error.message}`, `${err.error.success}`, {
@@ -63,6 +66,7 @@ export class HomeBrandingComponent {
           progressAnimation: 'decreasing',
           timeOut: 3000,
         });
+        this.isLoading.set(false);
       },
     });
   }

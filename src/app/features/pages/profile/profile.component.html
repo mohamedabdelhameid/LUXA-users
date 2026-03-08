@@ -1,4 +1,4 @@
-@if (profile()) {
+@if (profile() && !profileLoading()) {
   <div
     class="min-h-screen bg-[#0a0a0a] text-white font-['Tajawal',sans-serif] py-12 px-4"
     dir="rtl"
@@ -244,7 +244,7 @@
       </div>
     </div>
   </div>
-} @else {
+} @else if (!profile() && !profileLoading()) {
   <div class="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center px-4" dir="rtl">
     <div
       class="bg-white/3 border border-white/5 rounded-2xl p-10 text-center max-w-md w-full"
@@ -274,6 +274,79 @@
       >
         تسجيل الدخول
       </button>
+    </div>
+  </div>
+} @else if (profileLoading()) {
+  <div class="min-h-screen bg-[#0a0a0a] text-white py-12 px-4 animate-pulse" dir="rtl">
+    <div class="max-w-5xl mx-auto">
+      <div class="bg-white/3 border border-white/5 rounded-2xl p-6 mb-8">
+        <div class="flex items-center gap-5">
+          <div class="w-20 h-20 rounded-2xl bg-white/10"></div>
+
+          <div class="flex-1">
+            <div class="w-40 h-4 bg-white/10 rounded mb-3"></div>
+            <div class="w-60 h-6 bg-white/10 rounded mb-2"></div>
+            <div class="w-48 h-3 bg-white/10 rounded"></div>
+          </div>
+
+          <div class="w-20 h-16 bg-white/10 rounded-xl"></div>
+        </div>
+
+        <div class="my-6 h-px bg-white/10"></div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          @for (item of [1, 2, 3, 4]; track $index) {
+            <div class="bg-white/5 rounded-xl p-3">
+              <div class="w-16 h-2 bg-white/10 rounded mb-2"></div>
+              <div class="w-24 h-3 bg-white/10 rounded"></div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 mb-5">
+        <div class="w-28 h-6 bg-white/10 rounded"></div>
+        <div class="flex-1 h-px bg-white/10"></div>
+        <div class="w-12 h-3 bg-white/10 rounded"></div>
+      </div>
+
+      <div class="flex flex-col gap-3">
+        @for (order of [1, 2, 3]; track $index) {
+          <div class="bg-white/3 border border-white/5 rounded-2xl overflow-hidden">
+            <div class="flex justify-between px-5 py-4 border-b border-white/5">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-white/10 rounded"></div>
+                <div>
+                  <div class="w-24 h-3 bg-white/10 rounded mb-2"></div>
+                  <div class="w-16 h-2 bg-white/10 rounded"></div>
+                </div>
+              </div>
+
+              <div class="w-20 h-6 bg-white/10 rounded-full"></div>
+            </div>
+
+            <div class="px-5 py-4 flex flex-col gap-3">
+              @for (item of [1, 2]; track $index) {
+                <div class="flex items-center gap-3">
+                  <div class="w-12 h-12 bg-white/10 rounded-xl"></div>
+
+                  <div class="flex-1">
+                    <div class="w-40 h-3 bg-white/10 rounded mb-2"></div>
+                    <div class="w-24 h-2 bg-white/10 rounded"></div>
+                  </div>
+
+                  <div class="w-14 h-3 bg-white/10 rounded"></div>
+                </div>
+              }
+            </div>
+
+            <div class="flex justify-between px-5 py-3 border-t border-white/5">
+              <div class="w-24 h-3 bg-white/10 rounded"></div>
+              <div class="w-20 h-4 bg-white/10 rounded"></div>
+            </div>
+          </div>
+        }
+      </div>
     </div>
   </div>
 }

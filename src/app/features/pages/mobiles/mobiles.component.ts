@@ -27,6 +27,8 @@ export class MobilesComponent {
   productFilter: WritableSignal<Iproduct[]> = signal([]);
   brands: WritableSignal<Ibrand[]> = signal([]);
   selectedBrand: WritableSignal<string | null> = signal(null);
+  isLoading: WritableSignal<boolean> = signal(false);
+  brandLoading: WritableSignal<boolean> = signal(false);
 
   ngOnInit(): void {
     this.getProducts();
@@ -60,9 +62,11 @@ export class MobilesComponent {
   };
 
   getBrands(): void {
+    this.brandLoading.set(true);
     this.subscription = this.brandServicesServices.getAllBrands().subscribe({
       next: (res) => {
         this.brands.set(res.data);
+        this.brandLoading.set(false);
       },
       error: (err) => {
         this.toastr.error(`${err.error.message}`, `${err.error.success}`, {
@@ -70,15 +74,18 @@ export class MobilesComponent {
           progressAnimation: 'decreasing',
           timeOut: 3000,
         });
+        this.brandLoading.set(false);
       },
     });
   }
 
   getProducts(): void {
     this.getBrands();
+    this.isLoading.set(true);
     this.subscription = this.productServicesServices.getAllProducts().subscribe({
       next: (res: Iglobal<Iproduct[]>) => {
         this.products.set(res.data);
+        this.isLoading.set(false);
       },
       error: (err) => {
         this.toastr.error(`${err.error.message}`, `${err.error.success}`, {
@@ -86,6 +93,7 @@ export class MobilesComponent {
           progressAnimation: 'decreasing',
           timeOut: 3000,
         });
+        this.isLoading.set(false);
       },
     });
   }

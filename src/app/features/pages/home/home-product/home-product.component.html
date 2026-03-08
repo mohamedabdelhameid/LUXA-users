@@ -2,9 +2,7 @@
   <p class="text-xl md:text-5xl text-gray-500">المنتجات</p>
 
   <div class="my-3.5">
-    @if (products().length === 0) {
-      <p class="text-gray-500 text-2xl">لا توجد منتجات</p>
-    } @else {
+    @if (products().length > 0 && !isLoading()) {
       <owl-carousel-o [options]="customOptions">
         @for (item of products(); track $index) {
           <ng-template carouselSlide [id]="item.id">
@@ -14,6 +12,48 @@
           </ng-template>
         }
       </owl-carousel-o>
+    } @else {
+      @if (products().length === 0 && !isLoading()) {
+        <p class="text-gray-500 text-2xl">لا توجد منتجات</p>
+      } @else {
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          @for (item of [1, 2, 3, 4]; track $index) {
+            <div
+              role="status"
+              class="max-w-sm p-4 border border-default rounded-base shadow-xs animate-pulse md:p-6"
+            >
+              <div
+                role="status"
+                class="flex items-center justify-center h-48 max-w-sm bg-neutral-quaternary rounded-base animate-pulse mb-4 sm:mb-6"
+              >
+                <svg
+                  class="w-11 h-11 text-fg-disabled"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10 3v4a1 1 0 0 1-1 1H5m14-4v16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7.914a1 1 0 0 1 .293-.707l3.914-3.914A1 1 0 0 1 9.914 3H18a1 1 0 0 1 1 1ZM9 12h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1Zm5.697 2.395v-.733l1.269-1.219v2.984l-1.268-1.032Z"
+                  />
+                </svg>
+                <span class="sr-only">Loading...</span>
+              </div>
+              <div class="h-2.5 bg-neutral-quaternary rounded-full w-48 mb-4"></div>
+              <div class="h-2 bg-neutral-quaternary rounded-full mb-2.5"></div>
+              <div class="h-2 bg-neutral-quaternary rounded-full mb-2.5"></div>
+              <div class="h-2 bg-neutral-quaternary rounded-full"></div>
+
+              <span class="sr-only">Loading...</span>
+            </div>
+          }
+        </div>
+      }
     }
   </div>
 </div>

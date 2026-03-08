@@ -6,60 +6,110 @@
   </div>
 
   <div class="my-5">
-    <owl-carousel-o [options]="customOptions">
-      @for (brand of brands(); track brand.id) {
-        <ng-template carouselSlide [id]="brand.id">
-          <button
-            class="group flex flex-col mt-4 items-center min-w-20"
-            (click)="filterByBrand(brand.id)"
-          >
-            <div
-              class="w-16 h-16 rounded-full border border-gray-700 flex items-center justify-center overflow-hidden transition group-hover:border-yellow-500 group-hover:scale-105"
-              [class.border-yellow-500]="selectedBrand() === brand.id"
-              [class.ring-2]="selectedBrand() === brand.id"
-              [class.ring-yellow-500/40]="selectedBrand() === brand.id"
+    @if (brands().length > 0 && !brandLoading()) {
+      <owl-carousel-o [options]="customOptions">
+        @for (brand of brands(); track brand.id) {
+          <ng-template carouselSlide [id]="brand.id">
+            <button
+              class="group flex flex-col mt-4 items-center min-w-20"
+              (click)="filterByBrand(brand.id)"
             >
-              <img
-                loading="lazy"
-                [src]="'http://127.0.0.1:8000' + brand.image"
-                class="w-10 object-contain cursor-pointer"
-                alt="brand photo"
-              />
-            </div>
-            <span class="text-sm text-gray-300 mt-2 group-hover:text-yellow-500 transition">
-              {{ brand.name }}
-            </span>
-          </button>
-        </ng-template>
-      }
-    </owl-carousel-o>
-  </div>
-
-  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 justify-center">
-    @if (selectedBrand()) {
-      @if (productFilter().length > 0) {
-        @for (item of productFilter(); track $index) {
-          <div class="transform transition duration-300 hover:scale-[1.03]">
-            <app-card [item]="item"></app-card>
-          </div>
+              <div
+                class="w-16 h-16 rounded-full border border-gray-700 flex items-center justify-center overflow-hidden transition group-hover:border-yellow-500 group-hover:scale-105"
+                [class.border-yellow-500]="selectedBrand() === brand.id"
+                [class.ring-2]="selectedBrand() === brand.id"
+                [class.ring-yellow-500/40]="selectedBrand() === brand.id"
+              >
+                <img
+                  loading="lazy"
+                  [src]="'http://127.0.0.1:8000' + brand.image"
+                  class="w-10 object-contain cursor-pointer"
+                  alt="brand photo"
+                />
+              </div>
+              <span class="text-sm text-gray-300 mt-2 group-hover:text-yellow-500 transition">
+                {{ brand.name }}
+              </span>
+            </button>
+          </ng-template>
         }
-      } @else {
-        <div class="col-span-full text-center py-20">
-          <p class="text-gray-400 text-lg">لا توجد منتجات لهذه الماركة</p>
-        </div>
-      }
+      </owl-carousel-o>
     } @else {
-      @for (item of products(); track $index) {
-        <div class="transform transition duration-300 hover:scale-[1.03]">
-          <app-card [item]="item"></app-card>
-        </div>
+      @if (brandLoading()) {
+        <owl-carousel-o [options]="customOptions">
+          @for (item of [1, 2, 3, 4, 5, 6, 7, 8]; track $index) {
+            <ng-template carouselSlide>
+              <div
+                class="w-[90px] h-[90px] md:w-[100px] md:h-[100px] rounded-full bg-gray-300 animate-pulse"
+              ></div>
+            </ng-template>
+          }
+        </owl-carousel-o>
       }
     }
   </div>
 
-  @if (products().length === 0) {
-    <div class="text-center py-20">
-      <p class="text-gray-400 text-lg">لا توجد منتجات حالياً</p>
-    </div>
-  }
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 justify-center">
+    @if (products().length > 0 && !isLoading()) {
+      @if (selectedBrand()) {
+        @if (productFilter().length > 0) {
+          @for (item of productFilter(); track $index) {
+            <div class="transform transition duration-300 hover:scale-[1.03]">
+              <app-card [item]="item"></app-card>
+            </div>
+          }
+        } @else {
+          <div class="col-span-full text-center py-20">
+            <p class="text-gray-400 text-lg">لا توجد منتجات لهذه الماركة</p>
+          </div>
+        }
+      } @else {
+        @for (item of products(); track $index) {
+          <div class="transform transition duration-300 hover:scale-[1.03]">
+            <app-card [item]="item"></app-card>
+          </div>
+        }
+      }
+    } @else {
+      @if (products().length === 0 && !isLoading()) {
+        <p class="text-gray-500 text-2xl">لا توجد منتجات</p>
+      } @else {
+        @for (item of [1, 2, 3, 4]; track $index) {
+          <div
+            role="status"
+            class="max-w-sm p-4 border border-default rounded-base shadow-xs animate-pulse md:p-6"
+          >
+            <div
+              role="status"
+              class="flex items-center justify-center h-48 max-w-sm bg-neutral-quaternary rounded-base animate-pulse mb-4 sm:mb-6"
+            >
+              <svg
+                class="w-11 h-11 text-fg-disabled"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 3v4a1 1 0 0 1-1 1H5m14-4v16a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7.914a1 1 0 0 1 .293-.707l3.914-3.914A1 1 0 0 1 9.914 3H18a1 1 0 0 1 1 1ZM9 12h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1Zm5.697 2.395v-.733l1.269-1.219v2.984l-1.268-1.032Z"
+                />
+              </svg>
+              <span class="sr-only">Loading...</span>
+            </div>
+            <div class="h-2.5 bg-neutral-quaternary rounded-full w-48 mb-4"></div>
+            <div class="h-2 bg-neutral-quaternary rounded-full mb-2.5"></div>
+            <div class="h-2 bg-neutral-quaternary rounded-full mb-2.5"></div>
+            <div class="h-2 bg-neutral-quaternary rounded-full"></div>
+
+            <span class="sr-only">Loading...</span>
+          </div>
+        }
+      }
+    }
+  </div>
 </section>

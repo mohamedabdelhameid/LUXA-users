@@ -1,6 +1,6 @@
 <div class="p-5 mt-5 container mx-auto">
   <p class="text-xl md:text-5xl text-gray-500">الماركات</p>
-  @if (brands().length > 0) {
+  @if (brands().length > 0 && !isLoading()) {
     <owl-carousel-o [options]="customOptions">
       @for (brand of brands(); track brand.id) {
         <ng-template carouselSlide [id]="brand.id">
@@ -21,6 +21,10 @@
       }
     </owl-carousel-o>
   } @else {
-    <p class="text-gray-500 text-2xl">لا توجد منتجات</p>
+    @if (brands().length === 0 && !isLoading()) {
+      <p class="text-gray-500 text-2xl">لا توجد منتجات</p>
+    } @else {
+      <ngx-skeleton-loader count="6" appearance="square" size="180" animation="pulse" />
+    }
   }
 </div>
